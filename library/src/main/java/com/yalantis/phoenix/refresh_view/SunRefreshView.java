@@ -6,7 +6,11 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Rect;
-import android.graphics.drawable.Animatable;
+import android.os.Build;
+import androidx.annotation.RequiresApi;
+
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
@@ -20,7 +24,7 @@ import com.yalantis.phoenix.util.Utils;
  * Created by Oleksii Shliama on 22/12/2014.
  * https://dribbble.com/shots/1650317-Pull-to-Refresh-Rentals
  */
-public class SunRefreshView extends BaseRefreshView implements Animatable {
+public class SunRefreshView extends BaseRefreshView {
 
     private static final float SCALE_START_PERCENT = 0.5f;
     private static final int ANIMATION_DURATION = 1000;
@@ -72,7 +76,7 @@ public class SunRefreshView extends BaseRefreshView implements Animatable {
         mParent = parent;
         mMatrix = new Matrix();
 
-        setupAnimations();
+        //setupAnimations();
         parent.post(new Runnable() {
             @Override
             public void run() {
@@ -126,20 +130,25 @@ public class SunRefreshView extends BaseRefreshView implements Animatable {
         invalidateSelf();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void draw(Canvas canvas) {
-        if (mScreenWidth <= 0) return;
+        Rect rect = new Rect();
+        rect.set(10, 10, 800, 300);
 
-        final int saveCount = canvas.save();
+        LayoutInflater li = (LayoutInflater)getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = li.inflate(R.layout.lottie_layout, null);
 
-        canvas.translate(0, mTop);
-        canvas.clipRect(0, -mTop, mScreenWidth, mParent.getTotalDragDistance());
+        int widthSpec = View.MeasureSpec.makeMeasureSpec(rect.width(), View.MeasureSpec.EXACTLY);
+        int heightSpec = View.MeasureSpec.makeMeasureSpec(rect.height(), View.MeasureSpec.EXACTLY);
+        view.measure(widthSpec, heightSpec);
 
-        drawSky(canvas);
-        drawSun(canvas);
-        drawTown(canvas);
+        view.layout(0, 0, rect.width(), rect.height());
 
-        canvas.restoreToCount(saveCount);
+        canvas.save();
+        canvas.translate(rect.left, rect.top);
+        view.draw(canvas);
+        canvas.restore();
     }
 
     private void drawSky(Canvas canvas) {
@@ -280,14 +289,15 @@ public class SunRefreshView extends BaseRefreshView implements Animatable {
 
     @Override
     public void start() {
-        mAnimation.reset();
+        //mAnimation.reset();
+
         isRefreshing = true;
-        mParent.startAnimation(mAnimation);
+        //mParent.startAnimation(mAnimation);
     }
 
     @Override
     public void stop() {
-        mParent.clearAnimation();
+        //mParent.clearAnimation();
         isRefreshing = false;
         resetOriginals();
     }

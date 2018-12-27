@@ -2,9 +2,9 @@ package com.yalantis.phoenix;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.support.annotation.NonNull;
-import android.support.v4.view.MotionEventCompat;
-import android.support.v4.view.ViewCompat;
+import androidx.annotation.NonNull;
+import androidx.core.view.MotionEventCompat;
+import androidx.core.view.ViewCompat;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -25,7 +25,7 @@ import java.security.InvalidParameterException;
 
 public class PullToRefreshView extends ViewGroup {
 
-    private static final int DRAG_MAX_DISTANCE = 120;
+    private static final int DRAG_MAX_DISTANCE = 300;
     private static final float DRAG_RATE = .5f;
     private static final float DECELERATE_INTERPOLATION_FACTOR = 2f;
 
